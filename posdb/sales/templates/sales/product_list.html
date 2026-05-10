@@ -1,0 +1,88 @@
+<!-- sales/templates/sales/product_list.html -->
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <title>🛒 POS — បញ្ជីផលិតផល</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #f0f4f8; }
+        h1   { color: #1a202c; }
+        .product-card { background: white; border-radius: 10px; padding: 16px 20px; margin: 12px 0;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; 
+                        justify-content: space-between; align-items: center; gap: 12px; }
+        .product-card h2 a { text-decoration: none; color: #2b6cb0; font-size: 1.1em; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.8em;
+                 background: #ebf8ff; color: #2b6cb0; }
+        .price  { font-size: 1.3em; font-weight: bold; color: #276749; }
+        .stock  { font-size: 0.9em; color: #718096; }
+        .low    { color: #c53030; font-weight: bold; }
+        .empty  { color: #888; font-style: italic; }
+        nav a   { margin-right: 16px; color: #2b6cb0; }
+        .product-img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; flex-shrink: 0; }
+        .product-info { display: flex; align-items: center; gap: 16px; }
+    </style>
+</head>
+<body>
+    <h1>🛒 បញ្ជីផលិតផល</h1>
+
+    <nav>
+        <a href="/sales/products/">Products</a>
+        <a href="/sales/orders/">Orders</a>
+        <a href="/sales/orders/new/">＋ New Order</a>
+        <a href="/admin/">Admin</a>
+        <span style="float:right">
+            👤 {{ request.user.username }}
+            <form method="post" action="/accounts/logout/" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" style="background:none;border:none;color:#2b6cb0;cursor:pointer;padding:0;font-size:1em">
+                    Log Out
+                </button>
+            </form>
+        </span>
+    </nav>
+
+    <p>{{ products|length }} ផលិតផល active ក្នុងប្រព័ន្ធ</p>
+
+    {% for product in products %}
+    <div class="product-card">
+
+        <!-- Left side: image + info -->
+        <div class="product-info">
+
+            <!-- ✅ Product Image -->
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+            {% else %}
+                <img src="https://placehold.co/80x80?text=No+Image" alt="No image" class="product-img">
+            {% endif %}
+
+            <!-- Product name, category, barcode -->
+            <div>
+                <h2>
+                    <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
+                </h2>
+                <span class="badge">{{ product.category }}</span>
+                {% if product.barcode %}
+                    <span class="stock">Barcode: {{ product.barcode }}</span>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Right side: price + stock -->
+        <div style="text-align:right">
+            <p class="price">USD ${{ product.price }}</p>
+            {% if product.stock <= 5 %}
+                <p class="low">⚠️ ស្តុកទាប: {{ product.stock }} នៅសល់</p>
+            {% else %}
+                <p class="stock">ក្នុងស្តុក: {{ product.stock }}</p>
+            {% endif %}
+        </div>
+
+    </div>
+    {% empty %}
+    <p class="empty">មិនទាន់មានផលិតផលទេ — បន្ថែមតាម <a href="/admin/">ផ្ទាំង admin</a>!</p>
+    {% endfor %}
+
+</body>
+</html>

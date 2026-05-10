@@ -1,0 +1,62 @@
+<!-- sales/templates/sales/order_list.html -->
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <title>🧾 POS — ការបញ្ជាទិញ</title>
+    <style>
+        body  { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #f0f4f8; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px;
+                overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        th    { background: #2b6cb0; color: white; padding: 12px 16px; text-align: left; }
+        td    { padding: 11px 16px; border-bottom: 1px solid #e2e8f0; }
+        tr:last-child td { border-bottom: none; }
+        .paid      { color: #276749; font-weight: bold; }
+        .open      { color: #c05621; font-weight: bold; }
+        .refunded  { color: #6b46c1; }
+        .cancelled { color: #718096; text-decoration: line-through; }
+        nav a { margin-right: 16px; color: #2b6cb0; }
+    </style>
+</head>
+<body>
+    <h1>🧾 ការបញ្ជាទិញលក់</h1>
+    <!-- Add this <nav> block to the top of product_list.html and order_list.html -->
+<nav>
+    <a href="/sales/products/">Products</a>
+    <a href="/sales/orders/">Orders</a>
+    <a href="/sales/orders/new/">＋ New Order</a>
+    <a href="/admin/">Admin</a>
+    <span style="float:right">
+        👤 {{ request.user.username }}
+        <form method="post" action="/accounts/logout/" style="display:inline">
+            {% csrf_token %}
+            <button type="submit" style="background:none;border:none;color:#2b6cb0;cursor:pointer;padding:0;font-size:1em">
+                Log Out
+            </button>
+        </form>
+    </span>
+</nav>
+
+    <p>{{ orders|length }} ការបញ្ជាទិញ បានកត់ត្រា</p>
+
+    <table>
+        <thead>
+            <tr><th>#</th><th>អ្នកគិតលុយ</th><th>កាលបរិច្ឆេទ</th><th>ស្ថានភាព</th><th>សរុប</th><th>ផ្នែក</th></tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.pk }}</td>
+                <td>{{ order.cashier }}</td>
+                <td>{{ order.created_at|date:"d M Y, H:i" }}</td>
+                <td><span class="{{ order.status }}">{{ order.get_status_display }}</span></td>
+                <td>${{ order.total }}</td>
+                <td>{{ order.items.count }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" style="text-align:center;color:#888">មិនទាន់មានការបញ្ជាទិញ។</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
