@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-fw61*p#7rj5+*9mlqdzryg((_ai5x!%pcl^4@$xtb=oa#-^gk8
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['adminratana2006.pythonanywhere.com','127.0.0.1', 'localhost']
 
 # posdb/settings.py  — add these two lines anywhere at the bottom
 
@@ -36,8 +36,10 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'   # after logout → back to login page
 # With these settings + the root RedirectView, the full navigation cycle is:
 #   /  →  /accounts/login/  →  (log in)  →  /sales/products/
 #   (log out)  →  /accounts/login/
-
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://adminratana2006.pythonanywhere.com',
+    'https://adminratana2006.pythonanywhere.com',
+]
 
 # Application definition
 
